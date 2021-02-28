@@ -1,0 +1,28 @@
+<?php
+
+$pages_array = array(
+	'' => 'dashboard.php',
+	'dashboard' => 'dashboard.php',
+        'link' => 'link.php',
+	'messages' => 'messages.php',      
+	'profile' => 'profile.php',
+	'favourites' => 'favorites.php',
+	'profile/resources' => 'resources_private.php',
+	'profile/accounts' => 'accounts.php',
+        'profile/details' => 'profile_details.php',
+	'list/sme' => 'sme.php',
+	'test' => 'test.php',
+	'list/service-providers' => 'service_providers.php',
+	'list/investors' => 'investors.php',
+	'list/business-partners' => 'business_partners.php',
+	'list/nonprofit-organizations' => 'nonprofit_org.php',
+	'view-company' => 'individual_page.php',
+	'welcome' => 'welcome.php',
+	//'list-resources' => 'pages/list_resources_download.php',
+	//'list-company' => 'pages/list_company_download.php',
+	//'inbox-compose' => 'pages/inbox_compose.php',
+	//'inbox-inbox' => 'pages/inbox_inbox.php',
+	//'inbox-reply' => 'pages/inbox_reply.php',
+	//'inbox-search-result' => 'pages/inbox_search_result.php',
+	//'inbox-view' => 'pages/inbox_view.php',
+);

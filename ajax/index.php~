@@ -1,0 +1,39 @@
+<?php
+header('Content-Type: application/json');
+define('WP_USE_THEMES', true);
+/** Loads the WordPress Environment and Template */
+if ( !isset($wp_did_header) ) {
+
+	$wp_did_header = true;
+	require_once( dirname(__FILE__) . '/../wp-load.php' );	
+}
+
+class BP_AjaxMode
+{
+	const CHECK_COMPANY = 'CHECK_COMPANY';
+}
+
+$mode = filter_input(INPUT_POST, 'mode', FILTER_SANITIZE_STRING);
+$result = array();
+
+if ($mode === BP_AjaxMode::CHECK_COMPANY) {
+	$reg_no = filter_input(INPUT_POST, 'reg_no', FILTER_SANITIZE_STRING);
+	$country_id = filter_input(INPUT_POST, 'country_id', FILTER_VALIDATE_INT);
+
+	if ($reg_no && $country_id) { 
+		$sql = "SELECT COUNT(*) FROM " . _biz_portal_get_table_name('companies') . " c 
+		WHERE c.reg_number = " . $reg_no . " 
+			AND c.country_of_incorporate = " . $country_id;
+		$count = $wpdb->get_var($sql);
+
+		if ($count == 0) {
+			$result['result']['company_exists'] = false;
+		}
+		else
+		{
+			$result['result']['company_exists'] = false;
+		}
+	}
+}
+
+echo json_encode($result);

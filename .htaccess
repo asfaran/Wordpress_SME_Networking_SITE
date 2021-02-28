@@ -1,0 +1,74 @@
+# BEGIN iThemes Security
+	# BEGIN Tweaks
+		# Rules to block access to WordPress specific files
+		<files .htaccess>
+			Order allow,deny
+			Deny from all
+		</files>
+		<files readme.html>
+			Order allow,deny
+			Deny from all
+		</files>
+		<files readme.txt>
+			Order allow,deny
+			Deny from all
+		</files>
+		<files install.php>
+			Order allow,deny
+			Deny from all
+		</files>
+		<files wp-config.php>
+			Order allow,deny
+			Deny from all
+		</files>
+		
+		# Rules to disable directory browsing
+		Options -Indexes
+		
+		<IfModule mod_rewrite.c>
+			RewriteEngine On
+		
+			# Rules to protect wp-includes
+			RewriteRule ^wp-admin/includes/ - [F]
+			RewriteRule !^wp-includes/ - [S=3]
+			RewriteCond %{SCRIPT_FILENAME} !^(.*)wp-includes/ms-files.php
+			RewriteRule ^wp-includes/[^/]+\.php$ - [F]
+			RewriteRule ^wp-includes/js/tinymce/langs/.+\.php - [F]
+			RewriteRule ^wp-includes/theme-compat/ - [F]
+		
+			# Rules to prevent php execution in uploads
+			RewriteRule ^(.*)/uploads/(.*).php(.?) - [F]
+		
+			# Rules to help reduce spam
+			RewriteCond %{REQUEST_METHOD} POST
+			RewriteCond %{REQUEST_URI} ^(.*)wp-comments-post\.php*
+			RewriteCond %{HTTP_REFERER} !^(.*)myanmarsmelink.com.* 
+			RewriteCond %{HTTP_REFERER} !^http://jetpack\.wordpress\.com/jetpack-comment/ [OR]
+			RewriteCond %{HTTP_USER_AGENT} ^$
+			RewriteRule ^(.*)$ - [F]
+		</IfModule>
+	# END Tweaks
+# END iThemes Security
+AuthType Basic  
+AuthName "restricted area"  
+AuthUserFile /home1/mysme/public_html/MYANMARSMELINK.COM/.htpasswd  
+require valid-user
+
+AddType text/html .html
+<Files "SQL_TABLE*">
+  Order Allow,Deny
+  Allow from 192.168.123.100
+  Deny from All
+</Files>
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+</IfModule>
+
+# END WordPress

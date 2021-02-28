@@ -1,0 +1,12 @@
+.su-spoiler-style-simple > .su-spoiler-title {
+    color: #444;
+    background-color: #f5f5f5;
+    border-color: #ddd;
+    font-weight: 300;
+    font-size: 16px;
+    padding: 10px 15px;
+}
+
+.link-text-in-url a {
+    color: #999;
+}

@@ -1,0 +1,38 @@
+<?php
+/**
+ * class for signup local
+ *
+ * @author muneer
+ */
+namespace bp\signup;
+
+class Local extends Signup_Abstract
+{
+	/**
+	 * Class constructor
+	 *
+	 * @param int $uid
+	 * @param int $member_type_id
+	 */
+	public function __construct($uid, $member_type_id)
+	{
+		parent::__construct();
+		$this->company->user_id = $uid;
+		$this->company->member_type_id = $member_type_id;
+	}
+	
+	/**
+	 * Process the posted value from application form and returns an object of type BP_Company
+	 *
+	 * @param \BP_Company $company
+	 * @return \BP_Company
+	 * @see bp\signup.Signup_Abstract::execute_post()
+	 */
+	public function execute_post($company)
+	{
+		$company = parent::execute_post($company);
+		
+		return $company;
+	
+	}
+}

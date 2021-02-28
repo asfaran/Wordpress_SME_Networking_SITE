@@ -1,0 +1,146 @@
+<?php
+/**
+ * Class BizPortalRepo
+ * 
+ * @package BizPortal_WP_Module
+ * @subpackage Repository_Nodes
+ * @author SWISS BUREAU
+ */
+
+class BP_Repo_Nodes extends BP_AbstractRepository
+{
+	/**
+	 * Update node
+	 * 
+	 * @param BP_Node $node
+	 * @return BP_Node
+	 */
+	public function update_node(BP_Node $node)
+	{
+		$errors = 0;
+		$node_array = $node->to_array();
+
+		// Start a transaction
+		$this->db->query('START TRANSACTION');
+
+		if ($node->id > 0)
+		{
+			$udpate = $this->db->update($this->get_table_name($node->table_name), 
+				$node_array, array('id' => $node->id), $table_def_nodes, array('%d'));
+
+			if (!$update)
+				$errors++;
+		}
+		else {
+			$insert = $this->db->insert($this->get_table_name($node->table_name), 
+				$node_array, $table_def_nodes);
+
+			if ($insert)
+				$node->id = $this->db->insert_id;
+			else
+				$errors++;
+		}
+
+		// Delete the current relations
+		$this->db->delete($this->get_table_name(BP_File::$table_name), 
+			array('node_id' => $node->id), array('%d'));
+		// Add relations if available
+		if (is_array($node->attachments) && count($node->attachments) > 0) 
+		{
+			foreach ($node->attachments as $file) 
+			{
+				$file_array = $file->to_array();
+				$attachment_array = array(
+					'node_id' => $node->id,
+					'file_id' => $file->id,
+				);
+				if (!$file->id) 
+				{
+					$insert = $this->db->insert($this->get_table_name($file->table_name),
+						$file_array, $table_def_files_t);
+
+					if ($insert)
+						$attachment_array['file_id'] = $this->db->insert_id;
+					else
+						$errors++;
+				}
+				$insert = $this->db->insert($this->get_table_name('node_attachment'), $attachment_array, $table_def_node_attachment);
+				if (!$insert)
+					$errors++;
+			}
+		}
+
+
+		// Commit or rollback a transaction depending on the error state
+		if ($errors == 0) {
+    		$this->db->query('COMMIT');
+    		return true;
+    	}
+    	else {
+    		$this->db->query('ROLLBACK');
+    		return false;
+    	}
+	}
+
+	/**
+	 * Find the nodes
+	 *
+	 * @param int $offset
+	 * @param int $count
+	 * @return
+	 */
+	public function find_nodes($node_type, array $where, $count = 0, $offset = 0)
+	{
+		$sql = "
+		SELECT " . $this->get_prefixed_table_columns(BP_Node::$table_name, 'n') . 
+		", " . $this->get_prefixed_table_columns(BP_Node::$table_name, 'a', 'attachment_') . " 
+		FROM " . $this->get_table_name(BP_Node::$table_name) . " n 
+		LEFT JOIN " . $this->get_table_name('node_attachment') . " a";
+
+		if (!is_null($id))
+		{
+			$sql .= " WHERE " . $where[0] . " = " . $where[1];
+		}
+
+		if ($offset > 0 && $count > 0)
+		{
+			$sql .= " LIMIT %d, %d";
+			$sql = sprintf($sql, $offset, $count);
+		}
+		else if ($count > 0)
+		{
+			$sql .= " LIMIT %d";
+			$sql = sprintf($sql, $count);
+		}
+
+		$result = $this->db->get_result($sql, ARRAY_A);
+
+		$return_result = $this->map_result_to_object_array($result);
+		
+		return $return_result;
+	}
+
+	public function map_result_to_object_array($result)	
+	{
+		$return_result = array();
+		foreach ($result as $res)
+		{
+			if (array_key_exists($res['id'], $return_result))
+				$node = $return_result[$res['id']];
+			else {
+				$node = new BP_Node();			
+				BP_Hydrator::hydrate($node, $res);
+			}
+
+			$BP_File = new BP_File();
+			BP_Hydrator::hydrate($BP_File, $res, 'attachment_');
+
+			$node->attachments[$BP_File->id] = $BP_File;
+			
+			$return_result[$res['id']] = $node;
+		}
+
+		return $return_result;
+	}
+
+}

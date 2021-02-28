@@ -1,0 +1,62 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Description of test
+ *
+ * @author SWISS BUREAU
+ */
+class test
+{
+    public $name = "ok";
+}
+
+function modify_test(test $t) {
+    $t->name = "changed";
+    modify_again_test($t);
+}
+
+function modify_again_test(test $t) {
+    $t->name = "modified again";
+}
+
+$t = new test();
+modify_test($t);
+echo $t->name;
+
+
+//=====================
+
+
+$chks = filter_input(INPUT_POST, 'chk', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY);
+
+echo '<pre>';
+
+if (isset($_POST['submit']))
+{
+	print_r($_POST);
+}
+
+echo '</pre>';
+
+?>
+
+
+<html>
+<body>
+</body>
+<form method="POST">
+	<input type="checkbox" name="chk[]" value="1" />
+	<input type="checkbox" name="chk[]" value="3" />
+	<input type="checkbox" name="chk[]" value="4" />
+	<input type="checkbox" name="chk[]" value="5" />
+<br >.<br/>
+<input type="submit" name="submit" value="Submit" />
+</form>
+</body>
+</html>

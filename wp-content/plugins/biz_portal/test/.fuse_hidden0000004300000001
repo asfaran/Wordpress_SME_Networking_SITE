@@ -1,0 +1,104 @@
+<?php
+
+require_once (__DIR__ . '/../entities/BP_MemberType.php');
+require_once (__DIR__ . '/../entities/BP_Company.php');
+require_once (__DIR__ . '/../entities/BP_Contact.php');
+require_once (__DIR__ . '/../entities/BP_Address.php');
+
+require_once (__DIR__ . '/../signup/Signup_Abstract.php');
+require_once (__DIR__ . '/../signup/Local.php');
+require_once (__DIR__ . '/../signup/International.php');
+
+class BP_Signup_Test extends PHPUnit_Framework_TestCase
+{
+	private $data_arg;
+
+	public function test_execute()
+	{
+		$signup_internationl = new bp\signup\International(2, BP_MemberType::TYPE_INTL);
+
+		$company = new BP_Company();
+		$signup_internationl->execute_post($company);
+
+		echo filter_input(INPUT_POST, 'company_name');
+	}
+
+
+	public function setUp()
+	{
+		
+		$this->data_arg = array(
+			'id'					=> FILTER_VALIDATE_INT,
+			'company_name' 			=> FILTER_SANITIZE_STRING,
+			'reg_number'			=> FILTER_SANITIZE_STRING,
+			'country_of_incorporate' => FILTER_SANITIZE_NUMBER_INT,
+			'year_of_incorporate' 	=> FILTER_SANITIZE_NUMBER_INT,
+			'location_head_office' 	=> FILTER_SANITIZE_STRING,
+			'ceo_md' 			=> FILTER_SANITIZE_STRING,
+			'other_branch' 		=> FILTER_SANITIZE_STRING,
+			'turnover' 			=> FILTER_SANITIZE_STRING,
+			'num_employee' 		=> FILTER_SANITIZE_STRING,
+			'summary'			=> FILTER_SANITIZE_STRING,
+			'contact_person'	=> FILTER_SANITIZE_STRING,
+			'contact_position'	=> FILTER_SANITIZE_STRING,
+			'contact_telephone'	=> FILTER_SANITIZE_STRING,
+			'contact_fax'		=> FILTER_SANITIZE_STRING,
+			'contact_web'		=> FILTER_SANITIZE_STRING,
+			'contact_mobile'	=> FILTER_SANITIZE_STRING,
+			'contact_email'		=> FILTER_VALIDATE_EMAIL,
+			'address_number'	=> FILTER_VALIDATE_INT,
+			'address_city'		=> FILTER_SANITIZE_STRING,
+			'address_region'	=> FILTER_SANITIZE_STRING,
+			'address_street'	=> FILTER_SANITIZE_STRING,
+			'address_postal_code'	=> FILTER_VALIDATE_INT,
+			'address_country'	=> FILTER_SANITIZE_STRING,
+			'company_industries'	=> array(
+					'filter'	=> FILTER_VALIDATE_INT,
+					'flag'		=> FILTER_REQUIRE_ARRAY,
+				),
+			'company_biz_types'	=> array(
+					'filter'	=> FILTER_VALIDATE_INT,
+					'flag'		=> FILTER_REQUIRE_ARRAY,
+				),
+			'company_biz_types_other' 	=> FILTER_SANITIZE_STRING,
+			'biz_need_partner'			=> FILTER_VALIDATE_INT,
+			'biz_needs_partner_in' 		=> array(
+					'filter' 	=> FILTER_VALIDATE_INT, 
+					'flags' 	=> FILTER_REQUIRE_ARRAY,
+				),
+			'biz_needs_partner_other'	=> FILTER_SANITIZE_STRING,
+			'biz_needs_partner_in_ind' 	=> array(
+					'filter' 	=> FILTER_VALIDATE_INT,
+					'flags' 	=> FILTER_REQUIRE_ARRAY,				
+				),
+			'biz_needs_partner_in_ind_other'	=> FILTER_SANITIZE_STRING,
+			'biz_need_invest'			=> FILTER_VALIDATE_INT,
+			'biz_need_invest_amount'	=> FILTER_SANITIZE_STRING,
+			'biz_need_invest_emp_size'	=> FILTER_SANITIZE_STRING,
+			'biz_need_invest_ind' => array(
+					'filter' => FILTER_VALIDATE_INT, 
+					'flags' => FILTER_REQUIRE_ARRAY,
+				),
+			'biz_need_invest_ind_other'	=> FILTER_SANITIZE_STRING,
+			'biz_need_invest_turnover'	=> FILTER_SANITIZE_STRING,
+			'biz_need_invest_turnover_other'	=> FILTER_VALIDATE_INT,
+			'biz_need_invest_yrs'		=> FILTER_SANITIZE_STRING,
+			'biz_need_invest_yrs_other'	=> FILTER_VALIDATE_INT,
+			'biz_needs_service_provide_bool'	=> FILTER_VALIDATE_INT,
+			'biz_needs_service_provide' => array(
+					'filter' => FILTER_VALIDATE_INT, 
+					'flags' => FILTER_REQUIRE_ARRAY
+				),
+			'biz_needs_service_provide_other'	=> FILTER_SANITIZE_STRING,
+			'biz_need_ngo_supp_serv'			=> FILTER_VALIDATE_INT,
+			'biz_need_ngo_supp_serv_org_type_1'	=> FILTER_VALIDATE_INT,
+			'biz_need_ngo_supp_serv_org_type_2'	=> FILTER_VALIDATE_INT,
+			'biz_need_ngo_supp_serv_type'		=> array(
+					'filter' => FILTER_VALIDATE_INT, 
+					'flags' => FILTER_REQUIRE_ARRAY
+				),
+			'biz_need_ngo_supp_serv_type_other'	=> FILTER_SANITIZE_STRING,
+			'biz_need_ngo_ss_fund'	=> FILTER_SANITIZE_STRING,
+		);
+	}
+}
